@@ -1,0 +1,8 @@
+- name: Install PowerShell via Snap
+  hosts: powershell_targets
+  become: true
+  tasks:
+    - name: Install PowerShell package via snap
+      ansible.builtin.command: snap install powershell --classic
+      register: snap_install
+
