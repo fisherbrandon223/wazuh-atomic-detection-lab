@@ -2,7 +2,7 @@
   hosts: victim
   become: yes
   vars:
-    wazuh_manager_ip: "172.19.209.59"
+    wazuh_manager_ip: "<MANAGER_IP"        #must change to wazuh manager IP
     wazuh_agent_version: "4.9.2-1"
   tasks:
 
