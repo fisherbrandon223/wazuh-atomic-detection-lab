@@ -1,9 +1,9 @@
 - name: Execute atomic tests from attacker against victim
   hosts: attacking
-  remote_user: fishe
+  remote_user: USER                 #must change to user
   vars:
     victim_ip: "<VICTIM_IP"         #must change this to victim ip
-    victim_user: fishe              #must change to user
+    victim_user: USER               #must change to user
     atomic_path: /opt/atomic-red-team
     techniques:
       - T1059.004                   #can change what attacks are used
