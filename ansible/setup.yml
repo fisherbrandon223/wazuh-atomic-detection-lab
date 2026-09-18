@@ -1,0 +1,9 @@
+- name: Install Powershell on attacker and victim
+  import_playbook: install-powershell.yml
+
+- name: Prep the victim with atomics
+  import_playbook: prep-victim.yml
+
+- name: Install Wazuh Agent on victim
+  import_playbook: wazuh-agent-install.yml
+
