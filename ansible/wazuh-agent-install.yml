@@ -1,0 +1,38 @@
+- name: Install and configure Wazuh agent
+  hosts: victim
+  become: yes
+  vars:
+    wazuh_manager_ip: "172.19.209.59"
+    wazuh_agent_version: "4.9.2-1"
+  tasks:
+
+    - name: Download and dearmor Wazuh GPG key
+      shell: |
+        curl -fsSL https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --dearmor -o /usr/share/keyrings/wazuh.gpg
+      args:
+        creates: /usr/share/keyrings/wazuh.gpg
+
+    - name: Add Wazuh apt repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main"
+        state: present
+        filename: wazuh
+
+    - name: Install wazuh-agent exact version
+      apt:
+        name: "wazuh-agent={{ wazuh_agent_version }}"
+        state: present
+        update_cache: yes
+
+    - name: Set manager IP in ossec.conf
+      lineinfile:
+        path: /var/ossec/etc/ossec.conf
+        regexp: '<address>.*</address>'
+        line: "    <address>{{ wazuh_manager_ip }}</address>"
+
+    - name: Start and enable wazuh-agent
+      systemd:
+        name: wazuh-agent
+        state: started
+        enabled: yes
+
