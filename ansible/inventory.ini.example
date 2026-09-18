@@ -1,1 +1,10 @@
+[powershell_targets]
+<ATTACKER_IP>
+<VICTIM_IP>
+
+[attacking]
+<ATTACKER_IP>
+
+[victim]
+<VICTIM_IP>
 
