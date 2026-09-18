@@ -1,0 +1,34 @@
+- name: Execute atomic tests from attacker against victim
+  hosts: attacking
+  remote_user: fishe
+  vars:
+    victim_ip: "<VICTIM_IP"         #must change this to victim ip
+    victim_user: fishe              #must change to user
+    atomic_path: /opt/atomic-red-team
+    techniques:
+      - T1059.004
+      - T1087.001
+      - T1003.008
+  tasks:
+
+    - name: Run atomic tests on victim via SSH
+      shell: |
+        ssh -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -o ConnectTimeout=10 \
+            -o BatchMode=yes \
+            {{ victim_user }}@{{ victim_ip }} \
+            "pwsh -NonInteractive -Command \"
+              Import-Module invoke-atomicredteam;
+              Invoke-AtomicTest {{ item }} -Path {{ atomic_path }}/atomics
+            \""
+      loop: "{{ techniques }}"
+            timeout: 120
+      register: atomic_results
+
+    - name: Show results
+      debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ atomic_results.results }}"
+      loop_control:
+        label: "{{ item.item }}"
