@@ -6,7 +6,7 @@
     victim_user: fishe              #must change to user
     atomic_path: /opt/atomic-red-team
     techniques:
-      - T1059.004
+      - T1059.004                   #can change what attacks are used
       - T1087.001
       - T1003.008
   tasks:
