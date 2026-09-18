@@ -1,0 +1,34 @@
+- name: Prep victim with Atomic Red Team
+  hosts: victim
+  become: yes
+  vars:
+    atomic_path: /opt/atomic-red-team
+  tasks:
+
+    - name: Ensure unzip is installed
+      apt:
+        name: unzip
+        state: present
+
+    - name: Download atomic red team zip
+      get_url:
+        url: https://github.com/redcanaryco/atomic-red-team/archive/refs/heads/master.zip
+        dest: /tmp/atomic-red-team.zip
+
+    - name: Extract atomics
+      unarchive:
+        src: /tmp/atomic-red-team.zip
+        dest: /opt
+        remote_src: yes
+    - name: Rename to expected path
+      command: mv /opt/atomic-red-team-master {{ atomic_path }}
+      args:
+        creates: "{{ atomic_path }}"
+
+    - name: Install Invoke-AtomicRedTeam PowerShell module
+      shell: |
+        pwsh -NonInteractive -Command "
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction SilentlyContinue;
+          Install-Module -Name invoke-atomicredteam -Force -Scope AllUsers -AllowClobber;
+          Install-Module -Name powershell-yaml -Force -Scope AllUsers -AllowClobber
+        "
